@@ -2,38 +2,120 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SmartOCR - AI OCR App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Smart OCR Extractor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f5f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            margin-top: 40px;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #2c3e50;
+        }
+
+        .file-input {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #2980b9;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            color: #2c3e50;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+            color: #aaa;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>📄 Smart OCR Extractor</h1>
+        <h1>🧠 Smart OCR Extractor</h1>
 
-        <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="image" accept="image/*" required>
-            <br>
-            <button type="submit">🔍 Extract Text</button>
+        <!-- Loading indicator -->
+        <div id="loading">🔍 Processing image... Please wait.</div>
+
+        <!-- Upload form -->
+        <form method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+            <div class="file-input">
+                <input type="file" name="file" accept="image/*" required>
+            </div>
+            <button type="submit" class="submit-button">Extract Text</button>
         </form>
 
-        {% if uploaded %}
-            <div class="prediction-block">
-                <h2>✅ Predictions ({{ processing_time }}s)</h2>
-                <img src="{{ url_for('static', filename='../uploads/' + filename) }}" width="100%">
-                <ul>
-                    {% for item in predictions %}
-                        <li><b>Word:</b> {{ item['word'] }} |
-                            <b>Characters:</b>
-                            {% for char in item['characters'] %}
-                                <span>{{ char['char'] }}</span>
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                </ul>
+        <!-- Prediction result -->
+        {% if prediction %}
+            <div class="result">
+                <strong>Extracted Text:</strong><br>
+                {{ prediction }}
             </div>
         {% endif %}
-    <footer>
-      <p>© 2025 Smart OCR App by R. Aditya Prakash</p>
-    </footer>
-  </div>
+
+        <footer>Built with 💡 using Tesseract OCR</footer>
+    </div>
+
+    <script>
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
