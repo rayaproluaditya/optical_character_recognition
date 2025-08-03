@@ -1,28 +1,7 @@
-streamlit
-transformers
+Flask
 opencv-python
+numpy
 pytesseract
 Pillow
-torch
-# Core Framework
-streamlit
-
-# AI Model Dependencies (TrOCR)
-transformers
-torch
-
-# Image Processing
-opencv-python
-pillow
-numpy
-
-# OCR Engine
-pytesseract
-
-# Utility for Managing Tesseract Installation (optional, for local testing)
-tesseract
-
-# HuggingFace Hub (if model download fails)
-huggingface-hub
-imutils        
+imutils
 matplotlib
