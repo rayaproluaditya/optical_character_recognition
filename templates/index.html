@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart OCR Extractor</title>
+  <link rel="stylesheet" href="../static/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Smart OCR Extractor</h1>
+      <p>AI-powered tool to extract text from your handwritten or printed images</p>
+    </header>
+    <main>
+      <div class="upload-box">
+        <label for="imageUpload" class="custom-file-upload">Upload Image</label>
+        <input type="file" id="imageUpload" accept="image/*" />
+      </div>
+      <div class="options">
+        <label>Choose OCR Method:</label>
+        <select id="ocrMethod">
+          <option>TrOCR (AI-based)</option>
+          <option>Tesseract (Traditional)</option>
+        </select>
+      </div>
+      <button class="extract-button">Extract Text 🔍</button>
+      <div class="output">
+        <h2>Extracted Text:</h2>
+        <pre id="ocrResult"></pre>
+      </div>
+    </main>
+    <footer>
+      <p>© 2025 Smart OCR App by R. Aditya Prakash</p>
+    </footer>
+  </div>
+</body>
+</html>
