@@ -1,40 +1,63 @@
+# ocr_utils.py for Streamlit
 import cv2
 import pytesseract
 import numpy as np
 import time
-import os
+from PIL import Image
 
-# Ensure tesseract is accessible
-pytesseract.pytesseract.tesseract_cmd = "tesseract"
+# Make sure pytesseract is correctly linked
+pytesseract.pytesseract.tesseract_cmd = "tesseract"  # Requires tesseract in PATH
 
-def process_image(image_path):
+def process_image_streamlit(image):
     try:
-        # Step 1: Load the image
-        image = cv2.imread(image_path)
-        if image is None:
-            raise ValueError("Unable to read the image. Check the file format.")
+        # Convert the uploaded file to OpenCV format
+        image = np.array(Image.open(image).convert("RGB"))
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        # Step 2: Convert to grayscale
+        # 1. Grayscale conversion
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        time.sleep(0.5)  # simulate progress
+        time.sleep(0.5)
 
-        # Step 3: Apply Gaussian Blur
+        # 2. Apply Gaussian Blur
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
         time.sleep(0.5)
 
-        # Step 4: Apply adaptive thresholding
+        # 3. Thresholding
         thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        cv2.THRESH_BINARY_INV, 11, 2)
         time.sleep(0.5)
 
-        # Step 5: OCR text extraction (straightforward full text)
-        text = pytesseract.image_to_string(thresh)
-        time.sleep(0.5)
+        # 4. OCR data extraction
+        data = pytesseract.image_to_data(thresh, output_type=pytesseract.Output.DICT)
 
-        # Clean up and return final prediction
-        cleaned_text = text.strip()
-        return cleaned_text if cleaned_text else "[No readable text found]"
+        words_data = []
+
+        for i in range(len(data['text'])):
+            word = data['text'][i].strip()
+            if word:
+                x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
+                word_crop = gray[y:y + h, x:x + w]
+                chars = []
+
+                try:
+                    boxes = pytesseract.image_to_boxes(word_crop)
+                    for b in boxes.splitlines():
+                        b = b.strip().split(' ')
+                        if len(b) >= 1:
+                            char = b[0]
+                            chars.append(char)
+                except:
+                    chars = list(word)
+
+                words_data.append({
+                    'word': word,
+                    'characters': ''.join(chars),
+                    'position': f"{x}x{y}"
+                })
+
+        time.sleep(0.5)
+        return words_data
 
     except Exception as e:
         print(f"[ERROR] {e}")
-        return "[OCR Failed]"
+        return [{"word": "[OCR Failed]", "characters": "", "position": "-"}]
