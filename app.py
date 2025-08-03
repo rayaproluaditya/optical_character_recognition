@@ -4,8 +4,7 @@ import numpy as np
 import cv2
 import time
 
-from utils.ocr_engine import read_text_trocr, read_text_tesseract, preprocess_image_smooth, get_word_boxes
-
+from utils.ocr_engine import read_text_trocr, read_text_tesseract
 st.set_page_config(page_title="OCR Extractor", layout="centered")
 
 st.title("🧠 Smart OCR Extractor")
