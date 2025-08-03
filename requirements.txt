@@ -24,3 +24,4 @@ tesseract
 
 # HuggingFace Hub (if model download fails)
 huggingface-hub
+imutils        
