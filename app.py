@@ -1,60 +1,35 @@
-import streamlit as st
-from PIL import Image
-import numpy as np
-import cv2
+from flask import Flask, render_template, request, redirect, url_for
+import os
+from werkzeug.utils import secure_filename
+from ocr_utils import process_image
 import time
 
-from utils.ocr_engine import read_text_trocr, read_text_tesseract
+UPLOAD_FOLDER = 'uploads'
 
-# Streamlit page configuration
-st.set_page_config(
-    page_title="OCR Extractor",
-    page_icon="🧠",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Main Title
-st.title("🧠 Smart OCR Extractor")
-st.markdown("""
-Upload a **handwritten or printed image** and extract text using:
-- 🤖 AI-based TrOCR (by Microsoft)
-- 🔍 Tesseract OCR (Traditional)
-""")
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        if 'image' not in request.files:
+            return redirect(request.url)
+        file = request.files['image']
+        if file.filename == '':
+            return redirect(request.url)
+        if file:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
 
-# File uploader
-uploaded_file = st.file_uploader("📤 Upload an image", type=["png", "jpg", "jpeg"])
+            start_time = time.time()
+            predictions = process_image(filepath)
+            processing_time = round(time.time() - start_time, 2)
 
-# Proceed only if a file is uploaded
-if uploaded_file:
-    try:
-        pil_image = Image.open(uploaded_file).convert("RGB")
-    except Exception as e:
-        st.error("❌ Error opening the image file. Please upload a valid image.")
-    else:
-        st.image(pil_image, caption="📸 Uploaded Image", use_column_width=True)
+            return render_template("index.html", predictions=predictions, processing_time=processing_time, uploaded=True, filename=filename)
 
-        # Convert PIL image to OpenCV (numpy) format
-        image_cv2 = np.array(pil_image)
-        image_cv2 = cv2.cvtColor(image_cv2, cv2.COLOR_RGB2BGR)
+    return render_template("index.html", uploaded=False)
 
-        # OCR Method Selection
-        method = st.radio("🛠 Choose OCR Method:", ("TrOCR (AI-based)", "Tesseract (Traditional)"))
-
-        # Button to trigger OCR
-        if st.button("🔍 Extract Text"):
-            with st.spinner("🧠 Extracting text..."):
-                time.sleep(1)
-                try:
-                    if method == "TrOCR (AI-based)":
-                        result = read_text_trocr(pil_image)
-                    else:
-                        result = read_text_tesseract(image_cv2)
-                    st.success("✅ Text Extracted:")
-                    st.code(result, language="text")
-                except Exception as e:
-                    st.error(f"❌ OCR failed: {str(e)}")
-
-# Footer
-st.markdown("---")
-st.markdown("Made with ❤️ by R. Aditya Prakash")
+if __name__ == "__main__":
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    app.run(debug=True)
