@@ -1,122 +1,57 @@
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #f8f9fa, #e9ecef);
-  color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px;
-  min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
 .container {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 700px;
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-header h1 {
-  font-size: 2.5rem;
-  color: #4a4aef;
-  margin-bottom: 10px;
-}
-
-header p {
-  color: #666;
-  font-size: 1rem;
-}
-
-.upload-box {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.custom-file-upload {
-  background: #4a4aef;
-  color: white;
-  padding: 12px 25px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-.custom-file-upload:hover {
-  background: #3737c6;
+h1 {
+    text-align: center;
+    background: linear-gradient(to right, #2193b0, #6dd5ed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 input[type="file"] {
-  display: none;
+    margin-top: 20px;
 }
 
-.options {
-  margin: 20px 0;
-  text-align: center;
+button {
+    background: #2193b0;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
-.options label {
-  margin-right: 10px;
-  font-weight: bold;
+button:hover {
+    background: #6dd5ed;
 }
 
-select {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.prediction-block {
+    margin-top: 30px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
 }
 
-.extract-button {
-  background: #28a745;
-  color: white;
-  padding: 12px 30px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto;
-  margin-top: 20px;
-  transition: background 0.3s ease;
-}
-
-.extract-button:hover {
-  background: #1e7e34;
-}
-
-.output {
-  margin-top: 30px;
-}
-
-.output h2 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-#ocrResult {
-  background: #f1f1f1;
-  padding: 20px;
-  border-radius: 10px;
-  font-size: 1rem;
-  white-space: pre-wrap;
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-}
-
-footer {
-  text-align: center;
-  margin-top: 30px;
-  font-size: 0.9rem;
-  color: #888;
+.prediction-block span {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 12px;
+    background: #e0f7fa;
+    border-radius: 8px;
+    font-weight: bold;
 }
