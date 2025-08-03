@@ -1,7 +1,6 @@
-Flask
+streamlit
+transformers
+torch
 opencv-python
-numpy
+pillow
 pytesseract
-Pillow
-imutils
-matplotlib
