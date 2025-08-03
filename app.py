@@ -1,35 +1,37 @@
-from flask import Flask, render_template, request, redirect, url_for
-import os
-from werkzeug.utils import secure_filename
+import streamlit as st
 from ocr_utils import process_image
+from PIL import Image
 import time
+import os
 
-UPLOAD_FOLDER = 'uploads'
+st.set_page_config(page_title="OCR App", page_icon="📄")
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+st.title("📄 Optical Character Recognition App")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        if 'image' not in request.files:
-            return redirect(request.url)
-        file = request.files['image']
-        if file.filename == '':
-            return redirect(request.url)
-        if file:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+st.markdown("Upload an image to extract text using our OCR engine (TrOCR / Tesseract).")
 
+uploaded_file = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg"])
+
+if uploaded_file is not None:
+    with st.spinner("Uploading and processing image..."):
+        # Save uploaded file
+        os.makedirs("uploads", exist_ok=True)
+        file_path = os.path.join("uploads", uploaded_file.name)
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success("✅ Image uploaded successfully!")
+
+        # Display uploaded image
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+        # Process image
+        with st.spinner("Running OCR..."):
             start_time = time.time()
-            predictions = process_image(filepath)
+            predictions = process_image(file_path)
             processing_time = round(time.time() - start_time, 2)
 
-            return render_template("index.html", predictions=predictions, processing_time=processing_time, uploaded=True, filename=filename)
+        st.markdown("### 📋 Extracted Text:")
+        st.code(predictions, language='text')
 
-    return render_template("index.html", uploaded=False)
-
-if __name__ == "__main__":
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True)
+        st.markdown(f"⏱️ **Processing Time:** `{processing_time} seconds`")
